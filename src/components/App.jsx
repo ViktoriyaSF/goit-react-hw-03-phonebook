@@ -18,14 +18,6 @@ export class App extends Component {
     const contactsLocal = localStorage.getItem('contacts');
     const parseContacts = JSON.parse(contactsLocal);
 
-    // варіант щоб не формувала initialContacts якщо їх видалили
-    //   if (parseContacts) {
-    //     this.setState({ contacts: parseContacts });
-    //   } else {
-    //     this.setState({ contacts: initialContacts });
-    //   }
-    // }
-
     //  варіант коли потрібно повертати initialContacts  якщо пусто
     // перевірка якщо немає довжини
     // console.log(parseContacts.length);
@@ -34,6 +26,14 @@ export class App extends Component {
       return;
     }
     this.setState({ contacts: initialContacts });
+
+    // варіант щоб не формувала initialContacts якщо їх видалили
+    //   if (parseContacts) {
+    //     this.setState({ contacts: parseContacts });
+    //   } else {
+    //     this.setState({ contacts: initialContacts });
+    //   }
+    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
