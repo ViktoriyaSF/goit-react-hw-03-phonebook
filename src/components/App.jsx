@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { GlobalStyle } from './BasicStyles/GlobalStyle';
 import { Layout } from './Layout/Layout';
 import { nanoid } from 'nanoid';
+import initialContacts from '../contacts.json';
 
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
@@ -9,15 +10,39 @@ import { Filter } from './Filter/Filter';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
 
+  componentDidMount() {
+    const contactsLocal = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(contactsLocal);
+
+    // варіант щоб не формувала initialContacts якщо їх видалили
+    //   if (parseContacts) {
+    //     this.setState({ contacts: parseContacts });
+    //   } else {
+    //     this.setState({ contacts: initialContacts });
+    //   }
+    // }
+
+    //  варіант коли потрібно повертати initialContacts  якщо пусто
+    // перевірка якщо немає довжини
+    // console.log(parseContacts.length);
+    if (parseContacts?.length) {
+      this.setState({ contacts: parseContacts });
+      return;
+    }
+    this.setState({ contacts: initialContacts });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // console.log(this.state.contacts); // новий обо'єкт
+    // console.log(prevState.contacts); // минулий - попереедній обо'єкт
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
   //створюємо метод для додавання контактів в стейт
   addContact = (name, number) => {
     const contact = {
@@ -41,7 +66,7 @@ export class App extends Component {
   // Фільтрація
   filterChange = evt => {
     const { value } = evt.target;
-    this.setState({ filter: value });
+    this.setState({ filter: value.trim() });
   };
 
   //фільтер не залежно від розміру літер
